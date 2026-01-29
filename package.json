@@ -3,8 +3,9 @@
   "displayName": "PingDirectory dsconfig",
   "description": "Syntax highlighting and snippets for PingDirectory .dsconfig files.",
   "version": "0.1.0",
-  "publisher": "r-cz",
+  "publisher": "RyanCruz",
   "license": "MIT",
+  "icon": "assets/icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
