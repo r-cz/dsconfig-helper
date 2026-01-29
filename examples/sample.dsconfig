@@ -1,0 +1,6 @@
+# Sample dsconfig batch file
+create-backend --backend-name userRoot --type local-db --set base-dn:dc=example,dc=com --set enabled:true
+create-local-db-index --backend-name userRoot --index-name roomNumber --set index-type:equality
+set-password-policy-prop --policy-name "Default Password Policy" --set min-password-length:12
+set-log-publisher-prop --publisher-name "File-Based Audit Logger" --set enabled:true
+set-global-configuration-prop --set single-structural-objectclass-behavior:accept

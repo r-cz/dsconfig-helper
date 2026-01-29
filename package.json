@@ -1,0 +1,57 @@
+{
+  "name": "dsconfig-helper",
+  "displayName": "PingDirectory dsconfig",
+  "description": "Syntax highlighting and snippets for PingDirectory .dsconfig files.",
+  "version": "0.1.0",
+  "publisher": "r-cz",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "PingDirectory",
+    "PingIdentity",
+    "dsconfig",
+    "LDAP",
+    "configuration"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/r-cz/dsconfig-helper"
+  },
+  "homepage": "https://github.com/r-cz/dsconfig-helper",
+  "bugs": {
+    "url": "https://github.com/r-cz/dsconfig-helper/issues"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "dsconfig",
+        "aliases": [
+          "dsconfig",
+          "PingDirectory dsconfig"
+        ],
+        "extensions": [
+          ".dsconfig"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "dsconfig",
+        "scopeName": "source.dsconfig",
+        "path": "./syntaxes/dsconfig.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "dsconfig",
+        "path": "./snippets/dsconfig.code-snippets"
+      }
+    ]
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "Create Backend (Local DB)": {
+    "prefix": "create-backend",
+    "body": [
+      "create-backend --backend-name ${1:backendName} --type ${2|local-db,ldif,jdbc|} --set base-dn:${3:dc=example,dc=com} --set enabled:${4|true,false|}"
+    ],
+    "description": "Create a backend with base DN and enabled flag"
+  },
+  "Create Local DB Index": {
+    "prefix": "create-local-db-index",
+    "body": [
+      "create-local-db-index --backend-name ${1:userRoot} --index-name ${2:attributeName} --set index-type:${3|equality,substring,ordering,presence|}"
+    ],
+    "description": "Create a local DB index with common index types"
+  },
+  "Set Password Policy Property": {
+    "prefix": "set-password-policy-prop",
+    "body": [
+      "set-password-policy-prop --policy-name ${1:Default Password Policy} --set ${2:min-password-length}:${3:8}"
+    ],
+    "description": "Set a password policy property"
+  },
+  "Set Log Publisher Property": {
+    "prefix": "set-log-publisher-prop",
+    "body": [
+      "set-log-publisher-prop --publisher-name ${1:File-Based Audit Logger} --set enabled:${2|true,false|}"
+    ],
+    "description": "Enable or disable a log publisher"
+  },
+  "Set Global Configuration Property": {
+    "prefix": "set-global-configuration-prop",
+    "body": [
+      "set-global-configuration-prop --set ${1:property}:${2:value}"
+    ],
+    "description": "Set a global configuration property"
+  },
+  "Create Pass-Through Authentication Handler": {
+    "prefix": "create-pass-through-authentication-handler",
+    "body": [
+      "create-pass-through-authentication-handler --handler-name ${1:HandlerName} --type ${2:third-party} \\",
+      "  --set included-local-entry-base-dn:${3:ou=users,dc=example,dc=com} \\",
+      "  --set extension-class:${4:com.example.Handler} \\",
+      "  --set extension-argument:${5:key=value}"
+    ],
+    "description": "Create a pass-through authentication handler"
+  },
+  "dsconfig Multiline Command": {
+    "prefix": [
+      "dsconfig-command",
+      "dsconfig-multi"
+    ],
+    "body": [
+      "dsconfig ${1:subcommand} \\",
+      "  ${2:--option value} \\",
+      "  ${3:--option value}"
+    ],
+    "description": "Multi-line dsconfig command with continuations"
+  },
+  "Extension Argument: request-header": {
+    "prefix": [
+      "extension-argument-request-header",
+      "request-header-arg"
+    ],
+    "body": [
+      "--set extension-argument:request-header:${1:X-Header}=${2:value}"
+    ],
+    "description": "Add an extension-argument request header"
+  },
+  "Extension Argument: client-secret env": {
+    "prefix": [
+      "extension-argument-client-secret",
+      "client-secret-env"
+    ],
+    "body": [
+      "--set extension-argument:client-secret=\\${${1:CLIENT_SECRET_ENV}}"
+    ],
+    "description": "Set client-secret from an environment variable"
+  },
+  "Set Pass-Through Authentication Handler Properties": {
+    "prefix": "set-pass-through-authentication-handler-prop",
+    "body": [
+      "set-pass-through-authentication-handler-prop --handler-name ${1:HandlerName} \\",
+      "  --set subordinate-pass-through-authentication-handler:${2:FirstHandler} \\",
+      "  --set subordinate-pass-through-authentication-handler:${3:SecondHandler} \\",
+      "  --set continue-on-failure-type:${4:no-such-user}"
+    ],
+    "description": "Set subordinate PTA handlers and failure behavior"
+  },
+  "Set Plugin Properties": {
+    "prefix": "set-plugin-prop",
+    "body": [
+      "set-plugin-prop --plugin-name ${1:Plugin Name} --set override-local-password:${2|true,false|} --set update-local-password:${3|true,false|}"
+    ],
+    "description": "Set basic plugin properties"
+  },
+  "Set Log Publisher Severity": {
+    "prefix": "set-log-publisher-severity",
+    "body": [
+      "set-log-publisher-prop --publisher-name ${1:File-Based Error Logger} --add default-severity:${2:debug}"
+    ],
+    "description": "Add a default severity for a log publisher"
+  }
+}
