@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/r-cz/dsconfig-helper/compare/dsconfig-helper-v0.2.1...dsconfig-helper-v0.2.2) (2026-01-30)
+
+
+### Bug Fixes
+
+* publish-extension version lookup fix ([52db365](https://github.com/r-cz/dsconfig-helper/commit/52db36501e1645db6d2c701b5115181da998612f))
+
 ## [0.2.1](https://github.com/r-cz/dsconfig-helper/compare/dsconfig-helper-v0.2.0...dsconfig-helper-v0.2.1) (2026-01-30)
 
 
