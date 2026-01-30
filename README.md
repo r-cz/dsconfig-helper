@@ -1,7 +1,6 @@
 # .dsconfig Helper VS Code Extension
 
 [![VS Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/RyanCruz.dsconfig-helper)](https://marketplace.visualstudio.com/items?itemName=RyanCruz.dsconfig-helper)
-[![VS Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/RyanCruz.dsconfig-helper)](https://marketplace.visualstudio.com/items?itemName=RyanCruz.dsconfig-helper)
 
 Language support for PingDirectory `.dsconfig` batch files.
 
