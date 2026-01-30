@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/r-cz/dsconfig-helper/compare/dsconfig-helper-v0.2.3...dsconfig-helper-v1.0.0) (2026-01-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* Initial Release
+
+### Features
+
+* Initial Release ([2e4a185](https://github.com/r-cz/dsconfig-helper/commit/2e4a185f289974c330080a1ae7866dae06ad34fd))
+
 ## [0.2.3](https://github.com/r-cz/dsconfig-helper/compare/dsconfig-helper-v0.2.2...dsconfig-helper-v0.2.3) (2026-01-30)
 
 
