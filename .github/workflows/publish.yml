@@ -1,36 +1,61 @@
 name: Publish Extension
 
 on:
-  release:
+  workflow_run:
+    workflows:
+      - Release Please
     types:
-      - published
+      - completed
+  workflow_dispatch:
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      - name: Read version
+        id: version
+        run: echo "version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
+      - name: Check release exists
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ steps.version.outputs.version }}"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+          fi
+
       - name: Package VSIX
-        run: npx --yes @vscode/vsce package --out dsconfig-helper-${{ github.event.release.tag_name }}.vsix
+        if: ${{ steps.release.outputs.exists == 'true' || github.event_name == 'workflow_dispatch' }}
+        run: npx --yes @vscode/vsce package --out dsconfig-helper-${{ steps.release.outputs.tag }}.vsix
 
       - name: Publish to Marketplace
+        if: ${{ steps.release.outputs.exists == 'true' || github.event_name == 'workflow_dispatch' }}
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: npx --yes @vscode/vsce publish -p "$VSCE_PAT"
 
       - name: Create GitHub release
+        if: ${{ steps.release.outputs.exists == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
-          files: dsconfig-helper-${{ github.event.release.tag_name }}.vsix
-          tag_name: ${{ github.event.release.tag_name }}
+          files: dsconfig-helper-${{ steps.release.outputs.tag }}.vsix
+          tag_name: ${{ steps.release.outputs.tag }}
