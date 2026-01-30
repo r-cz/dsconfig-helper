@@ -1,6 +1,6 @@
 {
   "name": "dsconfig-helper",
-  "displayName": "PingDirectory dsconfig",
+  "displayName": "dsconfig Helper",
   "description": "Syntax highlighting and snippets for PingDirectory .dsconfig files.",
   "version": "0.2.3",
   "publisher": "RyanCruz",
