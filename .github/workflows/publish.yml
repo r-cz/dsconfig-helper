@@ -22,30 +22,40 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
       - name: Resolve release tag on HEAD
         id: tag
         run: |
           TAG=$(git tag --points-at HEAD | grep -E '^(dsconfig-helper-)?v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-          if [ -z "$TAG" ]; then
-            echo "tag=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
+      - name: Setup Bun
+        if: ${{ steps.tag.outputs.tag != '' }}
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Node
+        if: ${{ steps.tag.outputs.tag != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        if: ${{ steps.tag.outputs.tag != '' }}
+        run: bun install --frozen-lockfile
+
+      - name: Test
+        if: ${{ steps.tag.outputs.tag != '' }}
+        run: bun test
+
+      # vsce runs the vscode:prepublish script, which produces the minified bundle in dist/.
       - name: Package VSIX
         if: ${{ steps.tag.outputs.tag != '' }}
-        run: npx --yes @vscode/vsce package --out dsconfig-helper-${{ steps.tag.outputs.tag }}.vsix
+        run: bunx vsce package --no-dependencies --out dsconfig-helper-${{ steps.tag.outputs.tag }}.vsix
 
       - name: Publish to Marketplace
         if: ${{ steps.tag.outputs.tag != '' }}
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: npx --yes @vscode/vsce publish -p "$VSCE_PAT"
+        run: bunx vsce publish --packagePath dsconfig-helper-${{ steps.tag.outputs.tag }}.vsix -p "$VSCE_PAT"
 
       - name: Upload VSIX to release
         if: ${{ steps.tag.outputs.tag != '' }}

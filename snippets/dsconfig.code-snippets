@@ -2,7 +2,7 @@
   "Create Backend (Local DB)": {
     "prefix": "create-backend",
     "body": [
-      "create-backend --backend-name ${1:backendName} --type ${2|local-db,ldif,jdbc|} --set base-dn:${3:dc=example,dc=com} --set enabled:${4|true,false|}"
+      "create-backend --backend-name ${1:backendName} --type ${2|local-db,ldif|} --set base-dn:${3:dc=example,dc=com} --set enabled:${4|true,false|}"
     ],
     "description": "Create a backend with base DN and enabled flag"
   },
@@ -16,22 +16,20 @@
   "Set Password Policy Property": {
     "prefix": "set-password-policy-prop",
     "body": [
-      "set-password-policy-prop --policy-name ${1:Default Password Policy} --set ${2:min-password-length}:${3:8}"
+      "set-password-policy-prop --policy-name \"${1:Default Password Policy}\" --set ${2:min-password-length}:${3:8}"
     ],
     "description": "Set a password policy property"
   },
   "Set Log Publisher Property": {
     "prefix": "set-log-publisher-prop",
     "body": [
-      "set-log-publisher-prop --publisher-name ${1:File-Based Audit Logger} --set enabled:${2|true,false|}"
+      "set-log-publisher-prop --publisher-name \"${1:File-Based Audit Logger}\" --set enabled:${2|true,false|}"
     ],
     "description": "Enable or disable a log publisher"
   },
   "Set Global Configuration Property": {
     "prefix": "set-global-configuration-prop",
-    "body": [
-      "set-global-configuration-prop --set ${1:property}:${2:value}"
-    ],
+    "body": ["set-global-configuration-prop --set ${1:property}:${2:value}"],
     "description": "Set a global configuration property"
   },
   "Create Pass-Through Authentication Handler": {
@@ -45,36 +43,29 @@
     "description": "Create a pass-through authentication handler"
   },
   "dsconfig Multiline Command": {
-    "prefix": [
-      "dsconfig-command",
-      "dsconfig-multi"
-    ],
-    "body": [
-      "dsconfig ${1:subcommand} \\",
-      "  ${2:--option value} \\",
-      "  ${3:--option value}"
-    ],
+    "prefix": ["dsconfig-command", "dsconfig-multi"],
+    "body": ["dsconfig ${1:subcommand} \\", "  ${2:--option value} \\", "  ${3:--option value}"],
     "description": "Multi-line dsconfig command with continuations"
   },
   "Extension Argument: request-header": {
-    "prefix": [
-      "extension-argument-request-header",
-      "request-header-arg"
-    ],
-    "body": [
-      "--set extension-argument:request-header:${1:X-Header}=${2:value}"
-    ],
-    "description": "Add an extension-argument request header"
+    "prefix": ["extension-argument-request-header", "request-header-arg"],
+    "body": ["--set extension-argument:request-header:${1:X-Header}=${2:value}"],
+    "description": "Add an extension-argument request header (includes --set)"
+  },
+  "Extension Argument assignment: request-header": {
+    "prefix": ["extension-argument-request-header-value", "request-header-arg-value"],
+    "body": ["extension-argument:request-header:${1:X-Header}=${2:value}"],
+    "description": "Insert request-header assignment (use after --set)"
   },
   "Extension Argument: client-secret env": {
-    "prefix": [
-      "extension-argument-client-secret",
-      "client-secret-env"
-    ],
-    "body": [
-      "--set extension-argument:client-secret=\\${${1:CLIENT_SECRET_ENV}}"
-    ],
-    "description": "Set client-secret from an environment variable"
+    "prefix": ["extension-argument-client-secret", "client-secret-env"],
+    "body": ["--set extension-argument:client-secret=\\${${1:CLIENT_SECRET_ENV}}"],
+    "description": "Set client-secret from an environment variable (includes --set)"
+  },
+  "Extension Argument assignment: client-secret env": {
+    "prefix": ["extension-argument-client-secret-value", "client-secret-env-value"],
+    "body": ["extension-argument:client-secret=\\${${1:CLIENT_SECRET_ENV}}"],
+    "description": "Insert client-secret assignment (use after --set)"
   },
   "Set Pass-Through Authentication Handler Properties": {
     "prefix": "set-pass-through-authentication-handler-prop",
@@ -89,14 +80,14 @@
   "Set Plugin Properties": {
     "prefix": "set-plugin-prop",
     "body": [
-      "set-plugin-prop --plugin-name ${1:Plugin Name} --set override-local-password:${2|true,false|} --set update-local-password:${3|true,false|}"
+      "set-plugin-prop --plugin-name \"${1:Plugin Name}\" --set override-local-password:${2|true,false|} --set update-local-password:${3|true,false|}"
     ],
     "description": "Set basic plugin properties"
   },
   "Set Log Publisher Severity": {
     "prefix": "set-log-publisher-severity",
     "body": [
-      "set-log-publisher-prop --publisher-name ${1:File-Based Error Logger} --add default-severity:${2:debug}"
+      "set-log-publisher-prop --publisher-name \"${1:File-Based Error Logger}\" --add default-severity:${2:debug}"
     ],
     "description": "Add a default severity for a log publisher"
   }

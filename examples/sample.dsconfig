@@ -1,6 +1,37 @@
 # Sample dsconfig batch file
-create-backend --backend-name userRoot --type local-db --set base-dn:dc=example,dc=com --set enabled:true
-create-local-db-index --backend-name userRoot --index-name roomNumber --set index-type:equality
-set-password-policy-prop --policy-name "Default Password Policy" --set min-password-length:12
-set-log-publisher-prop --publisher-name "File-Based Audit Logger" --set enabled:true
-set-global-configuration-prop --set single-structural-objectclass-behavior:accept
+# Open in VS Code with dsconfig Helper installed to try completion, hover,
+# go to definition (F12), rename (F2), and Format Document.
+
+# region Backends
+dsconfig create-backend \
+    --backend-name userRoot \
+    --type local-db \
+    --set base-dn:dc=example,dc=com \
+    --set enabled:true
+
+dsconfig create-local-db-index \
+    --backend-name userRoot \
+    --index-name roomNumber \
+    --set index-type:equality
+
+dsconfig set-backend-prop \
+    --backend-name userRoot \
+    --set db-cache-percent:40
+# endregion
+
+# region Policies and logging
+dsconfig set-password-policy-prop \
+    --policy-name "Default Password Policy" \
+    --set min-password-length:12
+
+dsconfig set-log-publisher-prop \
+    --publisher-name "File-Based Audit Logger" \
+    --set enabled:true
+
+dsconfig set-root-dn-user-prop \
+    --user-name admin \
+    --set password<${ROOT_USER_PASSWORD_FILE}
+# endregion
+
+dsconfig set-global-configuration-prop \
+    --set single-structural-objectclass-behavior:accept

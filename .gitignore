@@ -1,2 +1,5 @@
 *.vsix
 **/.DS_Store
+/node_modules
+/dist
+/.vscode-test
