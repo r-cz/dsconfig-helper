@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/r-cz/dsconfig-helper/compare/dsconfig-helper-v1.0.0...dsconfig-helper-v2.0.0) (2026-10-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* requires VS Code 1.91 or newer.
+
+### Features
+
+* v2 with a dsconfig language server ([f067b3b](https://github.com/r-cz/dsconfig-helper/commit/f067b3baacdb3df411616f78cc85b2ca9f901a24))
+
 ## [1.0.0](https://github.com/r-cz/dsconfig-helper/compare/dsconfig-helper-v0.2.3...dsconfig-helper-v1.0.0) (2026-01-30)
 
 
