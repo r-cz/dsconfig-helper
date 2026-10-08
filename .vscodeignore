@@ -1,4 +1,12 @@
-.git/**
-.vscode/**
-*.vsix
-**/.DS_Store
+# Ship only the bundle and declarative contributions; everything else is excluded.
+**
+!dist/extension.js
+!dist/server.js
+!syntaxes/**
+!snippets/**
+!assets/icon.png
+!language-configuration.json
+!package.json
+!README.md
+!CHANGELOG.md
+!LICENSE

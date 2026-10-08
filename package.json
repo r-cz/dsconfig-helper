@@ -1,23 +1,28 @@
 {
   "name": "dsconfig-helper",
   "displayName": "dsconfig Helper",
-  "description": "Syntax highlighting and snippets for PingDirectory .dsconfig files.",
+  "description": "Language support for PingDirectory dsconfig batch files: highlighting, IntelliSense, validation, formatting, and navigation.",
   "version": "1.0.0",
   "publisher": "RyanCruz",
   "license": "MIT",
   "icon": "assets/icon.png",
+  "main": "./dist/extension.js",
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.91.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Snippets",
+    "Linters",
+    "Formatters"
   ],
   "keywords": [
     "PingDirectory",
     "PingIdentity",
     "dsconfig",
     "LDAP",
-    "configuration"
+    "configuration",
+    "server profile"
   ],
   "repository": {
     "type": "git",
@@ -26,6 +31,18 @@
   "homepage": "https://github.com/r-cz/dsconfig-helper",
   "bugs": {
     "url": "https://github.com/r-cz/dsconfig-helper/issues"
+  },
+  "activationEvents": [
+    "onLanguage:dsconfig"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": "limited",
+      "description": "Workspace-wide indexing reads files from disk, so it is unavailable in virtual workspaces. Single-file features still work."
+    }
   },
   "contributes": {
     "languages": [
@@ -36,7 +53,10 @@
           "PingDirectory dsconfig"
         ],
         "extensions": [
-          ".dsconfig"
+          ".dsconfig",
+          ".dsconfig.sample",
+          ".dsconfig.subst",
+          ".dsconfig.subst.default"
         ],
         "configuration": "./language-configuration.json"
       }
@@ -53,6 +73,131 @@
         "language": "dsconfig",
         "path": "./snippets/dsconfig.code-snippets"
       }
-    ]
-  }
+    ],
+    "commands": [
+      {
+        "command": "dsconfig.restartServer",
+        "title": "Restart Language Server",
+        "category": "dsconfig"
+      }
+    ],
+    "configuration": {
+      "title": "dsconfig",
+      "properties": {
+        "dsconfig.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "description": "Report problems in dsconfig files."
+        },
+        "dsconfig.validation.unknownSubcommands": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "Report subcommands that are not in the built-in PingDirectory catalog. Likely typos (e.g. `crate-backend`) are reported as warnings; other unrecognized subcommands are reported as information."
+        },
+        "dsconfig.additionalSubcommands": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "default": [],
+          "scope": "resource",
+          "markdownDescription": "Extra subcommands to treat as known, for example ones from PingAuthorize, PingDataSync, or PingDirectoryProxy (`set-policy-decision-service-prop`)."
+        },
+        "dsconfig.format.layout": {
+          "type": "string",
+          "enum": [
+            "preserve",
+            "multiline",
+            "singleline"
+          ],
+          "enumDescriptions": [
+            "Keep existing line breaks; normalize spacing, indentation, and continuation markers.",
+            "Put the subcommand on the first line and each argument on its own continuation line.",
+            "Join every command onto a single line."
+          ],
+          "default": "preserve",
+          "scope": "resource",
+          "description": "How Format Document lays out dsconfig commands."
+        },
+        "dsconfig.format.indentSize": {
+          "type": "integer",
+          "default": 4,
+          "minimum": 1,
+          "maximum": 16,
+          "scope": "resource",
+          "description": "Number of spaces used to indent continuation lines."
+        },
+        "dsconfig.format.dsconfigPrefix": {
+          "type": "string",
+          "enum": [
+            "preserve",
+            "add",
+            "remove"
+          ],
+          "enumDescriptions": [
+            "Leave the leading `dsconfig` keyword as written.",
+            "Ensure every command starts with `dsconfig`.",
+            "Strip the leading `dsconfig` keyword from every command."
+          ],
+          "default": "preserve",
+          "scope": "resource",
+          "description": "Whether Format Document adds or removes the leading `dsconfig` keyword."
+        },
+        "dsconfig.workspaceIndex.enabled": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "description": "Index dsconfig files across the workspace to power completions, go to definition, references, rename, and workspace symbols."
+        },
+        "dsconfig.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "scope": "window",
+          "description": "Trace communication between VS Code and the dsconfig language server."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "watch": "bun run scripts/build.ts --watch",
+    "vscode:prepublish": "bun run scripts/build.ts --production",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "bun test",
+    "check": "bun run typecheck && bun run lint && bun run format:check && bun test",
+    "package": "vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^10.1.2",
+    "vscode-languageserver": "^10.1.2",
+    "vscode-languageserver-textdocument": "^1.0.15"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "^1.4.2",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "~1.91.0",
+    "@vscode/vsce": "^4.0.0",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.3.2"
+  },
+  "trustedDependencies": [
+    "@vscode/vsce-sign"
+  ]
 }

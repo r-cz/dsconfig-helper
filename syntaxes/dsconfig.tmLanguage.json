@@ -3,66 +3,47 @@
   "name": "PingDirectory dsconfig",
   "scopeName": "source.dsconfig",
   "patterns": [
-    {
-      "include": "#comment"
-    },
-    {
-      "include": "#command"
-    },
-    {
-      "include": "#lineContinuation"
-    },
-    {
-      "include": "#quotedPropertyAssignmentsDouble"
-    },
-    {
-      "include": "#quotedPropertyAssignmentsSingle"
-    },
-    {
-      "include": "#propertyAssignments"
-    },
-    {
-      "include": "#resetAssignments"
-    },
-    {
-      "include": "#subcommand"
-    },
-    {
-      "include": "#option"
-    },
-    {
-      "include": "#string"
-    },
-    {
-      "include": "#envVar"
-    },
-    {
-      "include": "#boolean"
-    },
-    {
-      "include": "#number"
-    }
+    { "include": "#comment" },
+    { "include": "#lineContinuation" },
+    { "include": "#command" },
+    { "include": "#quotedPropertyAssignmentDouble" },
+    { "include": "#quotedPropertyAssignmentSingle" },
+    { "include": "#propertyAssignment" },
+    { "include": "#propertyName" },
+    { "include": "#typeArgument" },
+    { "include": "#namingArgument" },
+    { "include": "#subcommand" },
+    { "include": "#option" },
+    { "include": "#string" },
+    { "include": "#envVar" },
+    { "include": "#boolean" },
+    { "include": "#number" }
   ],
   "repository": {
     "comment": {
       "name": "comment.line.number-sign.dsconfig",
-      "match": "^\\s*#.*$"
-    },
-    "command": {
-      "name": "support.function.dsconfig",
-      "match": "(?i:\\bdsconfig\\b)"
+      "match": "^\\s*(#).*$",
+      "captures": {
+        "1": { "name": "punctuation.definition.comment.dsconfig" }
+      }
     },
     "lineContinuation": {
       "name": "punctuation.separator.continuation.dsconfig",
-      "match": "\\\\\\s*$"
+      "match": "\\\\(?=\\s*$)"
+    },
+    "command": {
+      "match": "^\\s*((?i:dsconfig))(?=\\s|$)",
+      "captures": {
+        "1": { "name": "support.function.dsconfig" }
+      }
     },
     "subcommand": {
       "name": "keyword.control.dsconfig",
-      "match": "(?i:\\b(?:create|list|delete|get|set)-[a-z][a-z0-9-]*\\b)"
+      "match": "(?<=^|\\s)(?i:(?:create|delete|get|set|list)-[a-z][a-z0-9-]*)(?=\\s|$)"
     },
     "option": {
       "name": "variable.parameter.dsconfig",
-      "match": "(?i:--[a-z][a-z0-9-]*)"
+      "match": "(?<=^|\\s)--?[A-Za-z][A-Za-z0-9-]*"
     },
     "envVar": {
       "name": "variable.other.environment.dsconfig",
@@ -72,143 +53,118 @@
       "patterns": [
         {
           "name": "string.quoted.double.dsconfig",
-          "match": "\"(?:\\\\.|[^\"])*\""
+          "begin": "\"",
+          "end": "\"|$",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.dsconfig" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.dsconfig" } },
+          "patterns": [{ "include": "#escape" }, { "include": "#envVar" }]
         },
         {
           "name": "string.quoted.single.dsconfig",
-          "match": "'(?:\\\\.|[^'])*'"
+          "begin": "'",
+          "end": "'|$",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.dsconfig" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.dsconfig" } },
+          "patterns": [{ "include": "#envVar" }]
         }
       ]
+    },
+    "escape": {
+      "name": "constant.character.escape.dsconfig",
+      "match": "\\\\[\"\\\\]"
     },
     "boolean": {
       "name": "constant.language.boolean.dsconfig",
-      "match": "(?i:\\b(?:true|false)\\b)"
+      "match": "(?<=^|\\s|[:<])(?i:true|false)(?=\\s|$|[\"'])"
     },
     "number": {
       "name": "constant.numeric.dsconfig",
-      "match": "\\b\\d+(?:\\.\\d+)?\\b"
+      "match": "(?<=^|\\s|[:<])-?\\d+(?:\\.\\d+)?(?=\\s|$|[\"'])"
     },
-    "propertyAssignments": {
-      "begin": "((?i:--(?:set|add|remove)\\b))\\s+([a-z][a-z0-9-]*)(:)",
+    "propertyAssignment": {
+      "begin": "(?<=^|\\s)((?i:--(?:set|add|remove)))\\s+([A-Za-z][A-Za-z0-9-]*)([:<])",
       "beginCaptures": {
-        "1": {
-          "name": "variable.parameter.dsconfig"
-        },
-        "2": {
-          "name": "variable.other.property.dsconfig"
-        },
-        "3": {
-          "name": "punctuation.separator.key-value.dsconfig"
-        }
+        "1": { "name": "variable.parameter.dsconfig" },
+        "2": { "name": "variable.other.property.dsconfig" },
+        "3": { "name": "punctuation.separator.key-value.dsconfig" }
       },
-      "end": "(?=\\s--|\\s#|$)",
+      "end": "(?=\\s|$)",
       "patterns": [
-        {
-          "include": "#envVar"
-        },
-        {
-          "include": "#string"
-        },
-        {
-          "include": "#boolean"
-        },
-        {
-          "include": "#number"
-        },
+        { "include": "#envVar" },
+        { "include": "#string" },
+        { "include": "#boolean" },
+        { "include": "#number" },
         {
           "name": "string.unquoted.dsconfig",
-          "match": "[^\\s#]+"
+          "match": "[^\\s\"'$]+|\\$"
         }
       ]
     },
-    "quotedPropertyAssignmentsDouble": {
-      "begin": "((?i:--(?:set|add|remove)\\b))\\s+(\")(?=[a-z][a-z0-9-]*:)",
+    "quotedPropertyAssignmentDouble": {
+      "begin": "(?<=^|\\s)((?i:--(?:set|add|remove)))\\s+(\")([A-Za-z][A-Za-z0-9-]*)([:<])",
       "beginCaptures": {
-        "1": {
-          "name": "variable.parameter.dsconfig"
-        },
-        "2": {
-          "name": "punctuation.definition.string.begin.dsconfig"
-        }
+        "1": { "name": "variable.parameter.dsconfig" },
+        "2": { "name": "string.quoted.double.dsconfig punctuation.definition.string.begin.dsconfig" },
+        "3": { "name": "variable.other.property.dsconfig" },
+        "4": { "name": "punctuation.separator.key-value.dsconfig" }
       },
-      "end": "\"",
+      "end": "\"|$",
       "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.dsconfig"
-        }
+        "0": { "name": "string.quoted.double.dsconfig punctuation.definition.string.end.dsconfig" }
       },
-      "name": "string.quoted.double.dsconfig",
+      "contentName": "string.quoted.double.dsconfig",
       "patterns": [
-        {
-          "name": "variable.other.property.dsconfig",
-          "match": "\\b[a-z][a-z0-9-]*(?=:)"
-        },
-        {
-          "name": "punctuation.separator.key-value.dsconfig",
-          "match": ":"
-        },
-        {
-          "include": "#envVar"
-        },
-        {
-          "include": "#boolean"
-        },
-        {
-          "include": "#number"
-        }
+        { "include": "#escape" },
+        { "include": "#envVar" },
+        { "include": "#boolean" },
+        { "include": "#number" }
       ]
     },
-    "quotedPropertyAssignmentsSingle": {
-      "begin": "((?i:--(?:set|add|remove)\\b))\\s+(')(?=[a-z][a-z0-9-]*:)",
+    "quotedPropertyAssignmentSingle": {
+      "begin": "(?<=^|\\s)((?i:--(?:set|add|remove)))\\s+(')([A-Za-z][A-Za-z0-9-]*)([:<])",
       "beginCaptures": {
-        "1": {
-          "name": "variable.parameter.dsconfig"
-        },
-        "2": {
-          "name": "punctuation.definition.string.begin.dsconfig"
-        }
+        "1": { "name": "variable.parameter.dsconfig" },
+        "2": { "name": "string.quoted.single.dsconfig punctuation.definition.string.begin.dsconfig" },
+        "3": { "name": "variable.other.property.dsconfig" },
+        "4": { "name": "punctuation.separator.key-value.dsconfig" }
       },
-      "end": "'",
+      "end": "'|$",
       "endCaptures": {
-        "0": {
-          "name": "punctuation.definition.string.end.dsconfig"
-        }
+        "0": { "name": "string.quoted.single.dsconfig punctuation.definition.string.end.dsconfig" }
       },
-      "name": "string.quoted.single.dsconfig",
-      "patterns": [
-        {
-          "name": "variable.other.property.dsconfig",
-          "match": "\\b[a-z][a-z0-9-]*(?=:)"
-        },
-        {
-          "name": "punctuation.separator.key-value.dsconfig",
-          "match": ":"
-        },
-        {
-          "include": "#envVar"
-        },
-        {
-          "include": "#boolean"
-        },
-        {
-          "include": "#number"
-        }
-      ]
+      "contentName": "string.quoted.single.dsconfig",
+      "patterns": [{ "include": "#envVar" }, { "include": "#boolean" }, { "include": "#number" }]
     },
-    "resetAssignments": {
-      "begin": "((?i:--reset\\b))",
-      "beginCaptures": {
-        "1": {
-          "name": "variable.parameter.dsconfig"
-        }
-      },
-      "end": "(?=\\s--|\\s#|$)",
-      "patterns": [
-        {
-          "name": "variable.other.property.dsconfig",
-          "match": "\\b[a-z][a-z0-9-]*\\b"
-        }
-      ]
+    "propertyName": {
+      "match": "(?<=^|\\s)((?i:--(?:reset|property)))\\s+([\"']?)([A-Za-z][A-Za-z0-9-]*)(\\2)(?=\\s|$)",
+      "captures": {
+        "1": { "name": "variable.parameter.dsconfig" },
+        "2": { "name": "punctuation.definition.string.begin.dsconfig" },
+        "3": { "name": "variable.other.property.dsconfig" },
+        "4": { "name": "punctuation.definition.string.end.dsconfig" }
+      }
+    },
+    "typeArgument": {
+      "match": "(?<=^|\\s)(--type|-t)\\s+([\"']?)([A-Za-z][A-Za-z0-9-]*)(\\2)(?=\\s|$)",
+      "captures": {
+        "1": { "name": "variable.parameter.dsconfig" },
+        "2": { "name": "punctuation.definition.string.begin.dsconfig" },
+        "3": { "name": "entity.name.type.dsconfig" },
+        "4": { "name": "punctuation.definition.string.end.dsconfig" }
+      }
+    },
+    "namingArgument": {
+      "match": "(?<=^|\\s)((?i:--(?:[a-z0-9-]+-)?name))\\s+(?:((\")(?:\\\\.|[^\"\\\\])*(\"))|((')[^']*(')))?([^\\s\"'$#-][^\\s]*)?(?=\\s|$)",
+      "captures": {
+        "1": { "name": "variable.parameter.dsconfig" },
+        "2": { "name": "string.quoted.double.dsconfig" },
+        "3": { "name": "punctuation.definition.string.begin.dsconfig" },
+        "4": { "name": "punctuation.definition.string.end.dsconfig" },
+        "5": { "name": "string.quoted.single.dsconfig" },
+        "6": { "name": "punctuation.definition.string.begin.dsconfig" },
+        "7": { "name": "punctuation.definition.string.end.dsconfig" },
+        "8": { "name": "string.unquoted.name.dsconfig" }
+      }
     }
   }
 }
